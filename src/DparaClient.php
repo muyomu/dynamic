@@ -45,7 +45,6 @@ class DparaClient implements Dpara
         return $list;
     }
 
-
     /**
      * @throws UrlNotMatch|KeyNotFond
      * @throws RepeatDefinition
