@@ -1,6 +1,6 @@
 <?php
 
-namespace muyomu\dpara;
+namespace muyomu\dpara\utility;
 
 use muyomu\database\base\Document;
 use muyomu\database\exception\RepeatDefinition;
@@ -71,7 +71,8 @@ class DparaHelper implements UrlValidate
      */
     public function get_next_url(string $url, array $dataCollector): array
     {
-        if (strcmp("/",$url) == 0){
+        $root = "/";
+        if ($root === $url){
             throw new UrlNotMatch();
         }else{
             $items = explode("/",$url);
