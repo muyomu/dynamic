@@ -3,25 +3,27 @@
 namespace muyomu\dpara\utility;
 
 use muyomu\database\base\Document;
-use muyomu\database\exception\RepeatDefinition;
 use muyomu\dpara\client\UrlValidate;
 use muyomu\dpara\exception\UrlNotMatch;
 use muyomu\http\Request;
+use muyomu\http\Response;
+use muyomu\log4p\Log4p;
 
 class DparaHelper implements UrlValidate
 {
+    private Log4p $log4p;
+
+    public function __construct()
+    {
+        $this->log4p = new Log4p();
+    }
+
 
     /**
-     * @throws UrlNotMatch|RepeatDefinition
+     * @throws UrlNotMatch
      */
-    public function key_exits(string $key, array $database,Request $request,array $dbClient): array
+    public function key_exits(string $key, array $database,Request $request,Response $response,array $dbClient,array &$keyCollector,array &$dataCollector): Document |null
     {
-        //数据收集器
-        $dataCollector = array();
-        //键值收集器
-        $keyCollector = array();
-
-        here:
         if (array_key_exists($key,$database)){
             //获取到所有的动态路由
             $dynamic_routes = $database[$key];
@@ -45,34 +47,29 @@ class DparaHelper implements UrlValidate
                 }
             }
 
-            /*
-             * 判断point
-             */
             if (is_null($point)){
-                throw new UrlNotMatch();
+                $this->log4p->muix_log_warn(__CLASS__,__METHOD__,__LINE__,"Url Not Match");
+                $response->doExceptionResponse(new UrlNotMatch(),400);
             }
 
             //保存route到request
-            $request_db = $request->getDbClient();
-            $document = new Document($dbClient[$point]->getData());
-            $request_db->insert("rule",$document);
-            return array("key"=>$keyCollector,"value"=>array_reverse($dataCollector));
+            return new Document($dbClient[$point]->getData());
         }else{
-            $next = $this->get_next_url($key,$dataCollector);
-            $key = $next['key'];
-            $dataCollector = $next['dataCollector'];
-            goto here;
+            return null;
         }
     }
 
-    public function get_next_url(string $url, array $dataCollector): array
+    public function get_next_url(string $url, array &$dataCollector,Response $response): string
     {
         $items = explode("/",$url);
         array_shift($items);
         $value = array_pop($items);
+        if ($value == ""){
+            $this->log4p->muix_log_warn(__CLASS__,__METHOD__,__LINE__,"Url Not Match");
+            $response->doExceptionResponse(new UrlNotMatch(),400);
+        }
         $dataCollector[] = $value;
-        $key = $this->get_combined_url($items);
-        return array("key"=>$key,"dataCollector"=>$dataCollector);
+        return $this->get_combined_url($items);
     }
 
     public function get_combined_url(array $items): string
