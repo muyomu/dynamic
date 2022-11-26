@@ -65,23 +65,14 @@ class DparaHelper implements UrlValidate
         }
     }
 
-
-    /**
-     * @throws UrlNotMatch
-     */
     public function get_next_url(string $url, array $dataCollector): array
     {
-        $root = "/";
-        if ($root === $url){
-            throw new UrlNotMatch();
-        }else{
-            $items = explode("/",$url);
-            array_shift($items);
-            $value = array_pop($items);
-            $dataCollector[] = $value;
-            $key = $this->get_combined_url($items);
-            return array("key"=>$key,"dataCollector"=>$dataCollector);
-        }
+        $items = explode("/",$url);
+        array_shift($items);
+        $value = array_pop($items);
+        $dataCollector[] = $value;
+        $key = $this->get_combined_url($items);
+        return array("key"=>$key,"dataCollector"=>$dataCollector);
     }
 
     public function get_combined_url(array $items): string
