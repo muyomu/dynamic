@@ -8,15 +8,19 @@ use muyomu\dpara\exception\UrlNotMatch;
 use muyomu\dpara\utility\DparaHelper;
 use muyomu\http\Request;
 use muyomu\http\Response;
+use muyomu\log4p\Log4p;
 
 class DparaClient implements Dpara
 {
 
     private DparaHelper $dparaHelper;
 
+    private Log4p $log4p;
+
     public function __construct()
     {
         $this->dparaHelper = new DparaHelper();
+        $this->log4p = new Log4p();
     }
 
 
