@@ -18,14 +18,15 @@ class DparaHelper implements UrlValidate
         $this->log4p = new Log4p();
     }
 
-    public function key_exits(Request $request,Response $response,array $static_routes_table,array $request_routs_table,array $dbClient,array &$keyCollector,array &$dataCollector): Document
+    public function key_exits(Request $request,Response $response,array $static_routes_table,array $request_routs_table,array $dbClient,array &$keyCollector,array &$dataCollector): Document |null
     {
         $keys = array_keys($request_routs_table);
+
+        $point = null;
         foreach ($keys as  $key){
             if (array_key_exists($key,$static_routes_table)){
                 $dynamic_routes = $static_routes_table[$key];
                 $paraLength = count($request_routs_table[$key]);
-                $point = null;
                 foreach ($dynamic_routes as $route){
                     $match = array();
                     preg_match_all("/\/:([a-zA-Z]+)/m",$route,$match);
@@ -52,7 +53,6 @@ class DparaHelper implements UrlValidate
                 return new Document($dbClient[$point]->getData());
             }
         }
-        $this->log4p->muix_log_warn(__CLASS__,__METHOD__,__LINE__,"Url Not Match");
-        $response->doExceptionResponse(new UrlNotMatch(),400);
+        return null;
     }
 }

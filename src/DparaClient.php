@@ -4,6 +4,7 @@ namespace muyomu\dpara;
 
 use muyomu\database\DbClient;
 use muyomu\dpara\client\Dpara;
+use muyomu\dpara\exception\UrlNotMatch;
 use muyomu\dpara\utility\DparaHelper;
 use muyomu\http\Request;
 use muyomu\http\Response;
@@ -46,6 +47,11 @@ class DparaClient implements Dpara
         $keyCollector = array();
 
         $document = $this->dparaHelper->key_exits($request,$response,$static_routes_table,$kk,$dbClient->database,$keyCollector,$dataCollector);
+
+        if (is_null($document)){
+            $this->log4p->muix_log_warn(__CLASS__,__METHOD__,__LINE__,"Url Not Match");
+            $response->doExceptionResponse(new UrlNotMatch(),400);
+        }
 
         /*
          * 将数据保存到request中的rule中

@@ -8,5 +8,5 @@ use muyomu\http\Response;
 
 interface UrlValidate
 {
-    public function key_exits(Request $request,Response $response,array $static_routes_table,array $request_routs_table,array $dbClient,array &$keyCollector,array &$dataCollector): Document;
+    public function key_exits(Request $request,Response $response,array $static_routes_table,array $request_routs_table,array $dbClient,array &$keyCollector,array &$dataCollector): Document |null;
 }
