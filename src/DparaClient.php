@@ -38,18 +38,14 @@ class DparaClient implements Dpara
          */
         $request_uri = $request->getURL();
 
+        $kk = $this->requestResolver($request_uri);
+
         //数据收集器
         $dataCollector = array();
         //键值收集器
         $keyCollector = array();
-        while (1){
-            $document = $this->dparaHelper->key_exits($request_uri,$static_routes_table,$request,$response,$dbClient->database,$keyCollector,$dataCollector);
-            if (is_null($document)){
-                $request_uri = $this->dparaHelper->get_next_url($request_uri,$dataCollector,$response);
-            }else{
-                break;
-            }
-        }
+
+        $document = $this->dparaHelper->key_exits($request,$response,$static_routes_table,$kk,$dbClient->database,$keyCollector,$dataCollector);
 
         /*
          * 将数据保存到request中的rule中
@@ -80,5 +76,24 @@ class DparaClient implements Dpara
             $list[$route] = $match[0];
         }
         return $list;
+    }
+
+    private function requestResolver(string $uri):array{
+        $one = explode("/",$uri);
+        array_shift($one);
+        $mdl = $one;
+        $collector = array();
+        $index = count($one);
+        $uk = '/';
+        foreach ( $one as $item){
+            if ($uk  == "/"){
+                $uk .= $item;
+            }else{
+                $uk .= "/".$item;
+            }
+            array_shift($mdl);
+            $collector[$uk] = $mdl;
+        }
+        return $collector;
     }
 }
