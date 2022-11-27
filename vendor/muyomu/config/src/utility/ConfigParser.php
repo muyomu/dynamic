@@ -29,7 +29,8 @@ class ConfigParser
 
         if ($this->checkForField($configField)){
             $defaultData = $this->getDefaultConfigData($reflectionClass);
-            return $this->resolveConfigData($GLOBALS[$configField], $defaultData);
+            $this->resolveConfigData($GLOBALS[$configField], $defaultData);
+            return $defaultData;
         }else{
             return $this->getDefaultConfigData($reflectionClass);
         }
@@ -50,34 +51,34 @@ class ConfigParser
     /**
      * @param array $fieldData
      * @param array $defaultData
-     * @return array
      */
-    private function resolveConfigData(array &$fieldData, array &$defaultData):array{
-        $keys = array_keys($defaultData);
+    private function resolveConfigData(array &$fieldData, array &$defaultData):void{
+
+        $keys = array_keys($fieldData);
         foreach ($keys as $key){
-            if (is_array($defaultData[$key])){
-                if ($this->checkForAssocArray($defaultData[$key])){
-                    if (isset($fieldData[$key])){
-                        $this->resolveConfigData($fieldData[$key],$defaultData[$key]);
-                    }
-                }else{
-                    if (isset($fieldData[$key])){
-                        if (gettype($fieldData[$key]) == gettype($defaultData[$key])){
-                            $defaultData[$key] = $fieldData[$key];
+            if (isset($defaultData[$key])){
+                if (is_array($defaultData[$key])){
+                    if ($this->checkForAssocArray($defaultData[$key])){
+                        if ($this->checkForAssocArray($fieldData[$key])){
+                            $this->resolveConfigData($fieldData[$key],$defaultData[$key]);
+                        }
+                    }else{
+                        if (!$this->checkForAssocArray($fieldData[$key])){
+                            foreach ($fieldData[$key] as $data){
+                                $defaultData[$key][] = $data;
+                            }
                         }
                     }
-                }
-            }else{
-                if (isset($fieldData[$key])){
+                }else{
                     if (gettype($fieldData[$key]) == gettype($defaultData[$key])){
                         $defaultData[$key] = $fieldData[$key];
                     }
                 }
+            }else{
+                $defaultData[$key] = $fieldData[$key];
             }
         }
-        return $defaultData;
     }
-
 
     /**
      * @param ReflectionClass $class
