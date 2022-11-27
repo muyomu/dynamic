@@ -1,5 +1,5 @@
 {
-    "name": "muyomu/dpara",
+    "name": "muyomu/dynamic",
     "description": "The dynamic paramater resolver of muyomu framework",
     "type": "library",
     "license": "apache-2.0",
