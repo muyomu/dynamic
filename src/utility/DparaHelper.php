@@ -38,6 +38,7 @@ class DparaHelper implements UrlValidate
                         foreach ($match[1] as $value){
                             $keyCollector[] = $value;
                         }
+                        $dataCollector = $request_routs_table[$key];
                         $point = $route;
                         break;
                     }
