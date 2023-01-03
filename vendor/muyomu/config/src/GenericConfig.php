@@ -56,8 +56,8 @@ abstract class GenericConfig implements UserClient
                         if ($this->parser->checkForAssocArray($optionData[$key])){
                             $keyM = array_shift($keys);
                             $optionData = $optionData[$keyM];
-                            $keys = array_shift($keys);
-                            return $this->getOptionFieldData($keys,$optionData);
+                            $next = implode(".",$keys);
+                            return $this->getOptionFieldData($next,$optionData);
                         }else{
                             return $optionData[$key];
                         }

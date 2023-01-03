@@ -29,6 +29,7 @@ class DparaClient implements Dpara
      * @param Response $response
      * @param DbClient $dbClient
      * @return void
+     * @throws UrlNotMatch
      */
     public function dpara(Request $request,Response $response, DbClient $dbClient): void
     {
@@ -54,7 +55,7 @@ class DparaClient implements Dpara
 
         if (is_null($document)){
             $this->log4p->muix_log_warn(__CLASS__,__METHOD__,__LINE__,"Url Not Match");
-            $response->doExceptionResponse(new UrlNotMatch(),400);
+            throw new UrlNotMatch();
         }
 
         /*

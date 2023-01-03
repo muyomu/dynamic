@@ -18,7 +18,10 @@ class DparaHelper implements UrlValidate
         $this->log4p = new Log4p();
     }
 
-    public function key_exits(Request $request,Response $response,array $static_routes_table,array $request_routs_table,array $dbClient,array &$keyCollector,array &$dataCollector): Document |null
+    /**
+     * @throws UrlNotMatch
+     */
+    public function key_exits(Request $request, Response $response, array $static_routes_table, array $request_routs_table, array $dbClient, array &$keyCollector, array &$dataCollector): Document |null
     {
         $keys = array_keys($request_routs_table);
 
@@ -46,7 +49,7 @@ class DparaHelper implements UrlValidate
                 }
                 if (is_null($point)){
                     $this->log4p->muix_log_warn(__CLASS__,__METHOD__,__LINE__,"Url Not Match");
-                    $response->doExceptionResponse(new UrlNotMatch(),400);
+                    return null;
                 }
 
                 //保存route到request

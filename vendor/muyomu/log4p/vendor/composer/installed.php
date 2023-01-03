@@ -3,7 +3,7 @@
         'name' => 'muyomu/log4p',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '2c4f99bbe8b04c3ad8d0d953266a213177c0b3c2',
+        'reference' => '790f20eaf31f6c9695ab61a67d6cdb2d4ba1a229',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'muyomu/config' => array(
-            'pretty_version' => 'v1.1.2',
-            'version' => '1.1.2.0',
-            'reference' => '11a05808815ed44197dda9c5e8ef5de298c8da84',
+            'pretty_version' => 'v1.1.5',
+            'version' => '1.1.5.0',
+            'reference' => '6f9045d5c9db392e23f4f31cfde63dff0b9966a3',
             'type' => 'library',
             'install_path' => __DIR__ . '/../muyomu/config',
             'aliases' => array(),
@@ -22,7 +22,7 @@
         'muyomu/log4p' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '2c4f99bbe8b04c3ad8d0d953266a213177c0b3c2',
+            'reference' => '790f20eaf31f6c9695ab61a67d6cdb2d4ba1a229',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
