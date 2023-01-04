@@ -94,7 +94,6 @@ class DparaClient implements Dpara
         array_shift($one);
         $mdl = $one;
         $collector = array();
-        $index = count($one);
         $uk = '/';
         foreach ( $one as $item){
             if ($uk  == "/"){

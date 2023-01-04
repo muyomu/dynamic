@@ -3,7 +3,7 @@
         'name' => 'muyomu/dynamic',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '53fb4e88be08b3243e88d2a9873d9338e50c4433',
+        'reference' => '107aeef3156290a02eced745d4d626dc7b1df618',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -31,7 +31,7 @@
         'muyomu/dynamic' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '53fb4e88be08b3243e88d2a9873d9338e50c4433',
+            'reference' => '107aeef3156290a02eced745d4d626dc7b1df618',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

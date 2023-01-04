@@ -7,17 +7,9 @@ use muyomu\dpara\client\UrlValidate;
 use muyomu\dpara\exception\UrlNotMatch;
 use muyomu\http\Request;
 use muyomu\http\Response;
-use muyomu\log4p\Log4p;
 
 class DparaHelper implements UrlValidate
 {
-    private Log4p $log4p;
-
-    public function __construct()
-    {
-        $this->log4p = new Log4p();
-    }
-
     /**
      * @throws UrlNotMatch
      */
@@ -26,29 +18,41 @@ class DparaHelper implements UrlValidate
         $keys = array_keys($request_routs_table);
 
         $point = null;
+
         foreach ($keys as  $key){
             if (array_key_exists($key,$static_routes_table)){
+
                 $dynamic_routes = $static_routes_table[$key];
+
                 $paraLength = count($request_routs_table[$key]);
+
                 foreach ($dynamic_routes as $route){
+
                     $match = array();
+
                     preg_match_all("/\/:([a-zA-Z]+)/m",$route,$match);
+
                     if (empty($match[1])){
                         $length = 0;
                     }else{
                         $length = count($match[1]);
                     }
+
                     if ($length == $paraLength){
+
                         foreach ($match[1] as $value){
                             $keyCollector[] = $value;
                         }
+
                         $dataCollector = $request_routs_table[$key];
+
                         $point = $route;
-                        break;
+                        goto here;
                     }
                 }
+
+	            here:
                 if (is_null($point)){
-                    $this->log4p->muix_log_warn(__CLASS__,__METHOD__,__LINE__,"Url Not Match");
                     return null;
                 }
 

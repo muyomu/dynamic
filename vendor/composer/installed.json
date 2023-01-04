@@ -103,7 +103,7 @@
             },
             "time": "2023-01-03T11:33:07+00:00",
             "type": "library",
-            "installation-source": "dist",
+            "installation-source": "source",
             "autoload": {
                 "psr-4": {
                     "muyomu\\http\\": "src/"
@@ -189,7 +189,7 @@
             },
             "time": "2022-11-26T13:19:24+00:00",
             "type": "library",
-            "installation-source": "dist",
+            "installation-source": "source",
             "autoload": {
                 "psr-4": {
                     "muyomu\\router\\": "src/"
