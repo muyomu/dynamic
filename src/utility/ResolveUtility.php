@@ -49,10 +49,7 @@ class ResolveUtility
     }
 
     public function checkIntersect(array $one,array $two):array{
-        $keys = array_keys($one);
 
-        $t_keys = array_keys($two);
-
-        return array_intersect($keys,$t_keys);
+        return array_intersect($one,$two);
     }
 }
