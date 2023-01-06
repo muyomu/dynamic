@@ -5,62 +5,49 @@ namespace muyomu\dpara\utility;
 use muyomu\database\base\Document;
 use muyomu\dpara\client\UrlValidate;
 use muyomu\dpara\exception\UrlNotMatch;
-use muyomu\http\Request;
-use muyomu\http\Response;
 
 class DparaHelper implements UrlValidate
 {
     /**
      * @throws UrlNotMatch
      */
-    public function key_exits(Request $request, Response $response, array $static_routes_table, array $request_routs_table, array $dbClient, array &$keyCollector, array &$dataCollector): Document |null
+    public function key_exits(array $static_routes_table,array $request_routs_table, string $key, array $dbClient, array &$keyCollector, array &$dataCollector): Document |null
     {
-        $keys = array_keys($request_routs_table);
+        $dynamic_routes = $static_routes_table[$key];
 
-        $t_keys = array_keys($static_routes_table);
+        $paraLength = count($request_routs_table[$key]);
 
-        $result = array_intersect($keys,$t_keys);
+        $point = null;
 
-        if (!empty($result)){
+        foreach ($dynamic_routes as $route){
 
-            $point = null;
+            $match = array();
 
-            foreach ($keys as  $key){
-                if (array_key_exists($key,$static_routes_table)){
+            preg_match_all("/\/:([a-zA-Z]+)/m",$route,$match);
 
-                    $dynamic_routes = $static_routes_table[$key];
+            if (empty($match[1])){
+                $length = 0;
+            }else{
+                $length = count($match[1]);
+            }
 
-                    $paraLength = count($request_routs_table[$key]);
+            if ($length == $paraLength){
 
-                    foreach ($dynamic_routes as $route){
-
-                        $match = array();
-
-                        preg_match_all("/\/:([a-zA-Z]+)/m",$route,$match);
-
-                        if (empty($match[1])){
-                            $length = 0;
-                        }else{
-                            $length = count($match[1]);
-                        }
-
-                        if ($length == $paraLength){
-
-                            foreach ($match[1] as $value){
-                                $keyCollector[] = $value;
-                            }
-
-                            $dataCollector = $request_routs_table[$key];
-
-                            $point = $route;
-                            break;
-                        }
-                    }
-                    //保存route到request
-                    return new Document($dbClient[$point]->getData());
+                foreach ($match[1] as $value){
+                    $keyCollector[] = $value;
                 }
+
+                $dataCollector = $request_routs_table[$key];
+
+                $point = $route;
+                break;
             }
         }
-        return null;
+        //保存route到request
+        if ($point !== null){
+            return new Document($dbClient[$point]->getData());
+        }else{
+            return null;
+        }
     }
 }

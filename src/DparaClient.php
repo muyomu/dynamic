@@ -6,6 +6,7 @@ use muyomu\database\DbClient;
 use muyomu\dpara\client\Dpara;
 use muyomu\dpara\exception\UrlNotMatch;
 use muyomu\dpara\utility\DparaHelper;
+use muyomu\dpara\utility\ResolveUtility;
 use muyomu\http\Request;
 use muyomu\http\Response;
 use muyomu\log4p\Log4p;
@@ -15,12 +16,12 @@ class DparaClient implements Dpara
 
     private DparaHelper $dparaHelper;
 
-    private Log4p $log4p;
+    private ResolveUtility $resolveUtility;
 
     public function __construct()
     {
         $this->dparaHelper = new DparaHelper();
-        $this->log4p = new Log4p();
+        $this->resolveUtility = new ResolveUtility();
     }
 
 
@@ -37,7 +38,7 @@ class DparaClient implements Dpara
         /*
          * 静态路由转换
          */
-        $static_routes_table = $this->routeResolver($dbClient->database);
+        $static_routes_table = $this->resolveUtility->routeResolver($dbClient->database);
 
         /*
          * 静态路由查询
@@ -47,7 +48,7 @@ class DparaClient implements Dpara
         /*
          * 动态路由转换
          */
-        $kk = $this->requestResolver($request_uri);
+        $kk = $this->resolveUtility->requestResolver($request_uri);
 
         //数据收集器
         $dataCollector = array();
@@ -55,63 +56,19 @@ class DparaClient implements Dpara
         //键值收集器
         $keyCollector = array();
 
-        //查找路由
-        $document = $this->dparaHelper->key_exits($request,$response,$static_routes_table,$kk,$dbClient->database,$keyCollector,$dataCollector);
-
-        if (is_null($document)){
-            $this->log4p->muix_log_warn(__CLASS__,__METHOD__,__LINE__,"Url Not Match");
+        $result = $this->resolveUtility->checkIntersect(array_keys($static_routes_table),array_keys($kk));
+        if (empty($result)){
             throw new UrlNotMatch();
+        }else{
+            //查找路由
+            $document = $this->dparaHelper->key_exits($static_routes_table,$kk,$result[0],$dbClient->database,$keyCollector,$dataCollector);
+
+            /*
+             * 将数据保存到request中的rule中
+             */
+            $document->getData()->setPathpara($dataCollector);
+            $document->getData()->setPathkey($keyCollector);
+            $request->getDbClient()->insert("rule",$document);
         }
-
-        /*
-         * 将数据保存到request中的rule中
-         */
-        $document->getData()->setPathpara($dataCollector);
-        $document->getData()->setPathkey($keyCollector);
-        $request->getDbClient()->insert("rule",$document);
-    }
-
-    /*
-     * 静态路由解析
-     */
-    private function routeResolver(array $database):array{
-        $routes = array_keys($database);
-        $routes_str = implode("|-|",$routes);
-        $match = array();
-        preg_match_all("/(\/[a-zA-Z]+)+/im",$routes_str,$match);
-
-        //获取到所有的静态路由除开根目录
-        $static_routes = $match[0];
-        $static_routes = array_unique($static_routes);
-
-        //获取到所有的静态路由对应的动态路由
-        $list = array();
-        foreach ($static_routes as $route){
-            $ck = str_replace("/","\/",$route);
-            preg_match_all("/{$ck}(\/:[a-zA-Z]*)*/im",$routes_str,$match);
-            $list[$route] = $match[0];
-        }
-        return $list;
-    }
-
-    /*
-     * 动态路由解析
-     */
-    private function requestResolver(string $uri):array{
-        $one = explode("/",$uri);
-        array_shift($one);
-        $mdl = $one;
-        $collector = array();
-        $uk = '/';
-        foreach ( $one as $item){
-            if ($uk  == "/"){
-                $uk .= $item;
-            }else{
-                $uk .= "/".$item;
-            }
-            array_shift($mdl);
-            $collector[$uk] = $mdl;
-        }
-        return $collector;
     }
 }
