@@ -17,47 +17,48 @@ class DparaHelper implements UrlValidate
     {
         $keys = array_keys($request_routs_table);
 
-        $point = null;
+        $tkeys = array_keys($static_routes_table);
 
-        foreach ($keys as  $key){
-            if (array_key_exists($key,$static_routes_table)){
+        $result = array_intersect($keys,$tkeys);
 
-                $dynamic_routes = $static_routes_table[$key];
+        if (!empty($result)){
 
-                $paraLength = count($request_routs_table[$key]);
+            $point = null;
 
-                foreach ($dynamic_routes as $route){
+            foreach ($keys as  $key){
+                if (array_key_exists($key,$static_routes_table)){
 
-                    $match = array();
+                    $dynamic_routes = $static_routes_table[$key];
 
-                    preg_match_all("/\/:([a-zA-Z]+)/m",$route,$match);
+                    $paraLength = count($request_routs_table[$key]);
 
-                    if (empty($match[1])){
-                        $length = 0;
-                    }else{
-                        $length = count($match[1]);
-                    }
+                    foreach ($dynamic_routes as $route){
 
-                    if ($length == $paraLength){
+                        $match = array();
 
-                        foreach ($match[1] as $value){
-                            $keyCollector[] = $value;
+                        preg_match_all("/\/:([a-zA-Z]+)/m",$route,$match);
+
+                        if (empty($match[1])){
+                            $length = 0;
+                        }else{
+                            $length = count($match[1]);
                         }
 
-                        $dataCollector = $request_routs_table[$key];
+                        if ($length == $paraLength){
 
-                        $point = $route;
-                        goto here;
+                            foreach ($match[1] as $value){
+                                $keyCollector[] = $value;
+                            }
+
+                            $dataCollector = $request_routs_table[$key];
+
+                            $point = $route;
+                            break;
+                        }
                     }
+                    //保存route到request
+                    return new Document($dbClient[$point]->getData());
                 }
-
-	            here:
-                if (is_null($point)){
-                    return null;
-                }
-
-                //保存route到request
-                return new Document($dbClient[$point]->getData());
             }
         }
         return null;

@@ -44,13 +44,18 @@ class DparaClient implements Dpara
          */
         $request_uri = $request->getURL();
 
+        /*
+         * 动态路由转换
+         */
         $kk = $this->requestResolver($request_uri);
 
         //数据收集器
         $dataCollector = array();
+
         //键值收集器
         $keyCollector = array();
 
+        //查找路由
         $document = $this->dparaHelper->key_exits($request,$response,$static_routes_table,$kk,$dbClient->database,$keyCollector,$dataCollector);
 
         if (is_null($document)){
@@ -89,6 +94,9 @@ class DparaClient implements Dpara
         return $list;
     }
 
+    /*
+     * 动态路由解析
+     */
     private function requestResolver(string $uri):array{
         $one = explode("/",$uri);
         array_shift($one);
