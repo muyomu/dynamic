@@ -59,7 +59,7 @@ class DparaClient implements Dpara
             $response->doExceptionResponse(new UrlNotMatch(),400);
         }else{
             //查找路由
-            $document = $this->dparaHelper->key_exits($static_routes_table,$kk,$result[0],$dbClient->database,$keyCollector,$dataCollector);
+            $document = $this->dparaHelper->key_exits($static_routes_table,$kk,$result[1],$dbClient->database,$keyCollector,$dataCollector);
 
             if ($document === null){
                 $response->doExceptionResponse(new UrlNotMatch(),400);
