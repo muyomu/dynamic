@@ -17,9 +17,9 @@ class DparaHelper implements UrlValidate
     {
         $keys = array_keys($request_routs_table);
 
-        $tkeys = array_keys($static_routes_table);
+        $t_keys = array_keys($static_routes_table);
 
-        $result = array_intersect($keys,$tkeys);
+        $result = array_intersect($keys,$t_keys);
 
         if (!empty($result)){
 
