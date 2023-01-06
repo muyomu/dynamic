@@ -4,13 +4,9 @@ namespace muyomu\dpara\utility;
 
 use muyomu\database\base\Document;
 use muyomu\dpara\client\UrlValidate;
-use muyomu\dpara\exception\UrlNotMatch;
 
 class DparaHelper implements UrlValidate
 {
-    /**
-     * @throws UrlNotMatch
-     */
     public function key_exits(array $static_routes_table,array $request_routs_table, string $key, array $dbClient, array &$keyCollector, array &$dataCollector): Document |null
     {
         $dynamic_routes = $static_routes_table[$key];

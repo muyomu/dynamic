@@ -9,7 +9,6 @@ use muyomu\dpara\utility\DparaHelper;
 use muyomu\dpara\utility\ResolveUtility;
 use muyomu\http\Request;
 use muyomu\http\Response;
-use muyomu\log4p\Log4p;
 
 class DparaClient implements Dpara
 {
@@ -30,7 +29,6 @@ class DparaClient implements Dpara
      * @param Response $response
      * @param DbClient $dbClient
      * @return void
-     * @throws UrlNotMatch
      */
     public function dpara(Request $request,Response $response, DbClient $dbClient): void
     {
@@ -58,11 +56,14 @@ class DparaClient implements Dpara
 
         $result = $this->resolveUtility->checkIntersect(array_keys($static_routes_table),array_keys($kk));
         if (empty($result)){
-            throw new UrlNotMatch();
+            $response->doExceptionResponse(new UrlNotMatch(),400);
         }else{
             //查找路由
             $document = $this->dparaHelper->key_exits($static_routes_table,$kk,$result[0],$dbClient->database,$keyCollector,$dataCollector);
 
+            if ($document === null){
+                $response->doExceptionResponse(new UrlNotMatch(),400);
+            }
             /*
              * 将数据保存到request中的rule中
              */
