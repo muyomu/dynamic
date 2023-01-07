@@ -3,7 +3,7 @@
     "description": "The dynamic paramater resolver of muyomu framework",
     "type": "library",
     "license": "apache-2.0",
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
             "muyomu\\dpara\\": "src/"
@@ -15,8 +15,8 @@
         }
     ],
     "require": {
-        "muyomu/http": "2.1.4",
         "muyomu/router": "2.0.6",
-        "muyomu/database": "2.0.2"
+        "muyomu/database": "2.0.2",
+        "muyomu/http": "2.1.6"
     }
 }

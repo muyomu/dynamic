@@ -65,7 +65,7 @@ class DparaClient implements Dpara
         }
 
         if ($document === null){
-            $response->doExceptionResponse(new UrlNotMatch(),400);
+            $response->doExceptionResponse(new UrlNotMatch(),404);
         }else{
             $document->getData()->setPathpara($dataCollector);
             $document->getData()->setPathkey($keyCollector);
