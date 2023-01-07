@@ -54,19 +54,19 @@ class DparaClient implements Dpara
         //键值收集器
         $keyCollector = array();
 
-        $result = $this->resolveUtility->checkIntersect(array_keys($static_routes_table),array_keys($kk));
-        if (empty($result)){
+        $two =array_keys($kk);
+
+        $document = null;
+
+        foreach ($two as $t){
+            if(array_key_exists($t,$static_routes_table)){
+                $document = $this->dparaHelper->key_exits($static_routes_table,$kk,$t,$dbClient->database,$keyCollector,$dataCollector);
+            }
+        }
+
+        if ($document === null){
             $response->doExceptionResponse(new UrlNotMatch(),400);
         }else{
-            //查找路由
-            $document = $this->dparaHelper->key_exits($static_routes_table,$kk,$result[1],$dbClient->database,$keyCollector,$dataCollector);
-
-            if ($document === null){
-                $response->doExceptionResponse(new UrlNotMatch(),400);
-            }
-            /*
-             * 将数据保存到request中的rule中
-             */
             $document->getData()->setPathpara($dataCollector);
             $document->getData()->setPathkey($keyCollector);
             $request->getDbClient()->insert("rule",$document);
